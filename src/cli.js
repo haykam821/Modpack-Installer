@@ -53,6 +53,36 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		log("info", "Installing the modpack.");
 	}
 
+	if (config.servers) {
+		const servers = config.servers.map(server => ({
+			ip: {
+				type: "string",
+				value: server.ip,
+			},
+			name: {
+				type: "string",
+				value: server.name,
+			},
+		}));
+		const serverNbt = nbt.writeUncompressed({
+			name: "servers",
+			type: "compound",
+			value: {
+				servers: {
+					type: "list",
+					value: {
+						type: "compound",
+						value: servers,
+					},
+				},
+			},
+		});
+
+		fs.writeFile(path.join(argv.folder, "./servers.dat"), serverNbt).then(() => {
+			log("info", "The server data has been written.");
+		});
+	}
+
 	fs.ensureDir(path.join(argv.folder, "./mods/"));
 
 	for await (const mod of config.mods) {
