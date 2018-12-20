@@ -12,7 +12,6 @@ const types = {
 	yay: ["", chalk.green],
 };
 
-
 function log(typeName, msg) {
 	const type = types[typeName] || types.darn;
 	process.stdout.write(`${type[1].bold(type[0])} ${type[1](msg)}\n`);
@@ -33,6 +32,15 @@ function getModUrl(mod) {
 	}
 }
 
+function ensure(argv, dir) {
+	const location = path.join(argv.folder, dir);
+	if (argv.clean) {
+		return fs.emptyDir(location);
+	} else {
+		return fs.ensureDir(location);
+	}
+}
+
 yargs.command("*", "Installs a modpack using a modpack configuration file.", builder => {
 	builder.option("config", {
 		alias: "c",
@@ -41,6 +49,11 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	builder.option("folder", {
 		alias: "f",
 		description: "The path to the .minecraft folder.",
+	});
+	builder.option("clean", {
+		default: false,
+		description: "Removes all content in folders that will be changed by the installation.",
+		type: "boolean",
 	});
 }, async argv => {
 	const config = await fs.readJSON(argv.config).catch(() => {
@@ -83,8 +96,8 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		});
 	}
 
-	fs.ensureDir(path.join(argv.folder, "./mods/"));
-
+	// Mod installation
+	await ensure(argv, "./mods/");
 	for await (const mod of config.mods) {
 		const jar = await got(getModUrl(mod)).catch(() => {
 			log("critical", "Could not fetch a mod.");
