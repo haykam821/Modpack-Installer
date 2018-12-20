@@ -123,7 +123,7 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		});
 
 		const paths = jar.request.gotOptions.pathname.split("/");
-		const filename = paths[paths.length - 1];
+		const filename = mod.name || paths[paths.length - 1];
 
 		await fs.writeFile(path.join(argv.folder, "./mods/", filename), jar.body);
 		log("info", `Downloaded ${filename}.`);
