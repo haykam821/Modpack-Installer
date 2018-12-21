@@ -71,7 +71,11 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		log("critical", "Could not read the modpack config file.");
 	});
 
-	if (config.pack && config.pack.name) {
+	if (!config.pack || !config.pack.format || isNaN(config.pack.format)) {
+		log("critical", "This modpack is not in the correct format.");
+	}
+
+	if (config.pack.name) {
 		log("info", `Installing the ${config.pack.name} modpack.`);
 	} else {
 		log("info", "Installing the modpack.");
