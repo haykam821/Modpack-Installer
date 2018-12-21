@@ -5,18 +5,40 @@ const fs = require("fs-extra");
 const path = require("path");
 const nbt = require("prismarine-nbt");
 
+class LogType {
+	constructor(prefix, colorer, exit) {
+		this.prefix = prefix || "log";
+		this.colorer = colorer || chalk.gray;
+		this.exit = exit || false;
+	}
+
+	format(message) {
+		const prefix = this.colorer.bold(this.prefix.toUpperCase() + ":");
+		return `${prefix} ${this.colorer(message)}`;
+	}
+}
+
+/**
+ * @type {Object.<LogType>}
+ */
 const types = {
-	critical: ["", chalk.red, true],
-	darn: ["", chalk.redBright],
-	info: ["", chalk.blue],
-	yay: ["", chalk.green],
+	critical: new LogType("CRITICAL", chalk.red, true),
+	darn: new LogType("   ERROR", chalk.redBright),
+	info: new LogType("    INFO", chalk.blue),
+	yay: new LogType(" SUCCESS", chalk.green),
 };
 
+/**
+ * Logs a message to the console.
+ * @param {string} typeName The message type.
+ * @param {string} msg The message to log.
+ * @returns {LogType} The log type that was used for the message.
+ */
 function log(typeName, msg) {
 	const type = types[typeName] || types.darn;
-	process.stdout.write(`${type[1].bold(type[0])} ${type[1](msg)}\n`);
+	process.stdout.write(type.format(msg) + "\n");
 
-	if (type[2]) {
+	if (type.exit) {
 		process.exit(0);
 	}
 
