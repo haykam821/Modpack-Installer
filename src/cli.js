@@ -147,7 +147,11 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		const jar = await got(getModUrl(mod), {
 			encoding: null,
 		}).catch(() => {
-			log("critical", "Could not fetch a mod.");
+			if (mod.name) {
+				log("critical", `Could not fetch ${mod.name}.`);
+			} else {
+				log("critical", "Could not fetch a mod.");
+			}
 		});
 
 		const paths = jar.request.gotOptions.pathname.split("/");
