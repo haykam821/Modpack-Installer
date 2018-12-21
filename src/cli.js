@@ -118,14 +118,16 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	// Mod installation
 	await ensure(argv, "./mods/");
 	for await (const mod of config.mods) {
-		const jar = await got(getModUrl(mod)).catch(() => {
+		const jar = await got(getModUrl(mod), {
+			encoding: null,
+		}).catch(() => {
 			log("critical", "Could not fetch a mod.");
 		});
 
 		const paths = jar.request.gotOptions.pathname.split("/");
 		const filename = mod.name || paths[paths.length - 1];
 
-		await fs.writeFile(path.join(argv.folder, "./mods/", filename), jar.body);
+		await fs.writeFile(path.join(argv.folder, "./mods/", filename + ".jar"), jar.body);
 		log("info", `Downloaded ${filename}.`);
 	}
 
