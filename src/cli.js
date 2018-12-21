@@ -55,8 +55,8 @@ function getModUrl(mod) {
 	}
 }
 
-function ensure(argv, dir) {
-	const location = path.join(argv.folder, dir);
+function ensure(argv, ...dirs) {
+	const location = path.join(argv.folder, ...dirs);
 	if (argv.clean) {
 		return fs.emptyDir(location);
 	} else {
@@ -108,6 +108,8 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		type: "boolean",
 	});
 }, async argv => {
+	await ensure(argv);
+
 	const config = await fs.readJSON(argv.config).catch(() => {
 		log("critical", "Could not read the modpack config file.");
 	});
