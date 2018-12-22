@@ -133,6 +133,11 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		description: "Prevents scripts from being ran.",
 		type: "boolean",
 	});
+	builder.option("context", {
+		default: "client",
+		description: "The context to install the modpack in.",
+		type: "string",
+	});
 }, async argv => {
 	await ensure(argv);
 
@@ -153,7 +158,7 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		log("info", "Installing the modpack.");
 	}
 
-	if (config.servers) {
+	if (config.servers && config.context === "client") {
 		const servers = config.servers.map(server => ({
 			ip: {
 				type: "string",
@@ -186,7 +191,7 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	await ensure(argv, "./config/");
 
 	// Splash.properties file
-	if (config.splash) {
+	if (config.splash && config.context === "client") {
 		await fs.writeFile(path.join(argv.folder, "./config/splash.properties"), keyValConfig(config.splash));
 		log("info", "Wrote the splash.properties file.");
 	}
@@ -208,6 +213,10 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	// Mod installation
 	await ensure(argv, "./mods/");
 	for await (const mod of config.mods) {
+		if (mod.context && !(mod.context === config.context || mod.context.includes(config.context))) {
+			return;
+		}
+
 		const jar = await got(getModUrl(mod), {
 			encoding: null,
 		}).catch(() => {
