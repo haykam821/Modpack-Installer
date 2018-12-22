@@ -5,6 +5,7 @@ const fs = require("fs-extra");
 const path = require("path");
 const nbt = require("prismarine-nbt");
 const { exec } = require("child_process");
+const installerVersion = require("./../package.json").version;
 
 class LogType {
 	constructor(prefix, colorer, exit) {
@@ -207,6 +208,14 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		await fs.writeFile(path.join(argv.folder, "./mods/", filename + ".jar"), jar.body);
 		log("info", `Downloaded ${filename}.`);
 	}
+
+	await fs.writeJSON(path.join(argv.folder, "./pack_installation.json"), {
+		finished: Date.now(),
+		installerVersion,
+		modpackFormat: parseInt(config.pack.format),
+	}).catch(() => {
+		log("darn", "Could not write the install log.");
+	});
 
 	script("finish", config, argv);
 	log("info", "Finished!");
