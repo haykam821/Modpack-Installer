@@ -191,6 +191,20 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 		log("info", "Wrote the splash.properties file.");
 	}
 
+	if (config.move) {
+		Object.entries(config.move).forEach(async move => {
+			ensure(argv, move[0]);
+
+			const move0 = path.join(argv.config, move[0]);
+			const move1 = path.join(argv.folder, move[1]);
+			await fs.copy(move0, move1, {
+				overwrite: argv.clean,
+			});
+
+			log("info", `Moved ${move0} to ${move1}.`);
+		});
+	}
+
 	// Mod installation
 	await ensure(argv, "./mods/");
 	for await (const mod of config.mods) {
