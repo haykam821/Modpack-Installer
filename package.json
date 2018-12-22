@@ -34,7 +34,7 @@
 		"yargs": "^12.0.5"
 	},
 	"bin": {
-		"modpackinstall": "./cli.js",
-		"mpi": "./cli.js"
+		"modpackinstall": "./src/cli.js",
+		"mpi": "./src/cli.js"
 	}
 }
