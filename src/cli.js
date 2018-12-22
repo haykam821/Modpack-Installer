@@ -250,5 +250,5 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	script("finish", config, argv);
 	log("info", "Finished!");
 });
-
+yargs.wrap(yargs.terminalWidth());
 yargs.argv;
