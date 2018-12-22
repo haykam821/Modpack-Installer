@@ -53,7 +53,7 @@ function log(typeName, msg) {
  */
 function getModUrl(mod) {
 	switch (mod.type) {
-		case "forge":
+		case "curseforge":
 			return `https://minecraft.curseforge.com/projects/${mod.projectID}/files/${mod.fileID}/download`;
 		default:
 			return mod.url;
