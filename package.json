@@ -2,7 +2,7 @@
   "name": "modpack-installer",
   "description": "Installs a custom JSON file representing a modpack into a .minecraft folder.",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "./src/cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,5 +32,9 @@
     "got": "^9.4.0",
     "prismarine-nbt": "^1.2.1",
     "yargs": "^12.0.5"
+  },
+  "bin": {
+	"modpackinstall": "./cli.js",
+	"mpi": "./cli.js"
   }
 }
