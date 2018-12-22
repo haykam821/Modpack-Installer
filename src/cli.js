@@ -120,10 +120,13 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 	builder.option("config", {
 		alias: "c",
 		type: "string",
+		default: process.cwd(),
 	});
 	builder.option("folder", {
 		alias: "f",
 		description: "The path to the .minecraft folder.",
+		require: true,
+		type: "string",
 	});
 	builder.option("clean", {
 		default: false,
