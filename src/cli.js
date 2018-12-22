@@ -138,7 +138,7 @@ yargs.command("*", "Installs a modpack using a modpack configuration file.", bui
 
 	const path = (await fs.lstat(argv.config)).isDirectory() ? argv.config : path.join(argv.config, "./..");
 
-	const config = await fs.readJSON(path.join(argv.config, "./modpack.json").catch(() => {
+	const config = await fs.readJSON(path.join(argv.config, "./modpack.json")).catch(() => {
 		log("critical", "Could not read the modpack config file.");
 	});
 
